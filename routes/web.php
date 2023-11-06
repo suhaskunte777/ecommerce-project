@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Product;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -14,7 +15,9 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', function () {
-    return ['Laravel' => app()->version()];
+    return Product::select(['name','price'])->whereIn('name', ['Quam optio est vero voluptatum quos porro et.'])->get();
+
+    // return ['Laravel' => app()->version()];
 });
 
 require __DIR__.'/auth.php';

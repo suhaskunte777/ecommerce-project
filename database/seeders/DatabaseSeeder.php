@@ -3,6 +3,11 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Category;
+use App\Models\Product;
+use App\Models\Review;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -12,11 +17,28 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // \App\Models\User::factory(10)->create();
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+            'role' => 'admin',
+        ]);
 
-        // \App\Models\User::factory()->create([
-        //     'name' => 'Test User',
-        //     'email' => 'test@example.com',
-        // ]);
+        User::factory(50)->create();
+
+        Category::factory(5)->create();
+
+        $categories = Category::all();
+        $users = User::all();
+
+        Product::factory(50)->make()->each(function ($product) use ($categories, $users) {
+            $product->category_id = $categories->random()->id;
+            $product->save();
+
+            Review::factory(rand(5, 25))->make()->each(function ($review) use ($users, $product) {
+                $review->user_id = $users->random()->id;
+                $review->product_id = $product->id;
+                $review->save();
+            });
+        });
     }
 }
