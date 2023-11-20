@@ -7,6 +7,7 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\RateLimiter;
 use Illuminate\Support\Facades\Route;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class RouteServiceProvider extends ServiceProvider
 {
@@ -35,6 +36,18 @@ class RouteServiceProvider extends ServiceProvider
 
             Route::middleware('web')
                 ->group(base_path('routes/web.php'));
+        });
+
+        $this->configureModel('product', 'App\Models\Product');
+        $this->configureModel('category', 'App\Models\Category');
+        $this->configureModel('review', 'App\Models\Review');
+        $this->configureModel('user', 'App\Models\User');
+    }
+
+    private function configureModel(string $alias, string $class): void
+    {
+        $this->model($alias, $class, function () {
+            throw new NotFoundHttpException("Resource not found");
         });
     }
 }
